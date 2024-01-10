@@ -9,7 +9,6 @@ class VehicleRegistrationScreen extends StatefulWidget {
   const VehicleRegistrationScreen({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
   _VehicleRegistrationScreenState createState() =>
       _VehicleRegistrationScreenState();
 }
@@ -22,10 +21,15 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
 
   List<Vehicle> vehicles = []; // Lista de veículos
 
+  @override
+  void initState() {
+    super.initState();
+    _updateVehicleList(); // Carregar a lista de veículos ao iniciar a tela
+  }
+
   Future<void> _getImage() async {
     final pickedFile =
-        // ignore: deprecated_member_use
-        await ImagePicker().getImage(source: ImageSource.gallery);
+        await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
@@ -33,10 +37,95 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
     }
   }
 
-  void updateList(List<Vehicle> updatedList) {
-    setState(() {
-      vehicles = updatedList;
-    });
+  Future<void> _updateVehicleList() async {
+    try {
+      final List<Vehicle> updatedVehicles = await VehicleService.getVehicles();
+      setState(() {
+        vehicles = updatedVehicles;
+      });
+    } catch (error) {
+      print('Erro ao carregar veículos: $error');
+    }
+  }
+
+  void _editVehicle(Vehicle vehicle) {
+    TextEditingController nomeController = TextEditingController(text: vehicle.nome);
+    TextEditingController marcaController = TextEditingController(text: vehicle.marca);
+    TextEditingController modeloController = TextEditingController(text: vehicle.modelo);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Editar Veículo',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextFormField(
+                  controller: nomeController,
+                  decoration: const InputDecoration(labelText: 'Nome'),
+                ),
+                TextFormField(
+                  controller: marcaController,
+                  decoration: const InputDecoration(labelText: 'Marca'),
+                ),
+                TextFormField(
+                  controller: modeloController,
+                  decoration: const InputDecoration(labelText: 'Modelo'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Vehicle updatedVehicle = Vehicle(
+                      id: vehicle.id,
+                      nome: nomeController.text,
+                      marca: marcaController.text,
+                      modelo: modeloController.text,
+                    );
+
+                    await VehicleService.updateVehicle(
+                      vehicleId: updatedVehicle.id,
+                      nome: updatedVehicle.nome,
+                      marca: updatedVehicle.marca,
+                      modelo: updatedVehicle.modelo,
+                    );
+
+                    _updateVehicleList(); // Atualiza a lista após a edição do veículo
+                    // ignore: use_build_context_synchronously
+                    Navigator.pop(context); // Fechar o modal após salvar as alterações
+                  },
+                  child: const Text('Salvar Alterações'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void _deleteVehicle(Vehicle vehicle) {
+    VehicleService.deleteVehicle(vehicle.id)
+      .then((_) {
+        _updateVehicleList(); // Atualiza a lista após a exclusão do veículo
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Veículo excluído com sucesso')),
+        );
+      })
+      .catchError((error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Falha ao excluir o veículo')),
+        );
+      });
   }
 
   @override
@@ -45,10 +134,9 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
       appBar: AppBar(
         title: const Text('Register Vehicle'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height, // Define uma altura máxima
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -64,9 +152,7 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                 controller: _modeloController,
                 decoration: const InputDecoration(labelText: 'Modelo'),
               ),
-              _imageFile != null
-                  ? Image.file(_imageFile!)
-                  : const Placeholder(),
+              _imageFile != null ? Image.file(_imageFile!) : const Placeholder(),
               ElevatedButton(
                 onPressed: _getImage,
                 child: const Text('Imagem'),
@@ -92,7 +178,9 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                       _vehicleNomeController.clear();
                       _marcaController.clear();
                       _modeloController.clear();
-                      _imageFile = null;
+                      setState(() {
+                        _imageFile = null;
+                      });
 
                       // ignore: use_build_context_synchronously
                       Navigator.pop(context);
@@ -110,11 +198,15 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                 'Veículos cadastrados:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              SingleChildScrollView(
-                child: VehicleListWidget(
-                  updateList: updateList,
-                  vehicles: vehicles,
-                ),
+              VehicleListWidget(
+                vehicles: vehicles,
+                deleteVehicle: _deleteVehicle,
+                updateList: (updatedList) {
+                  setState(() {
+                    vehicles = updatedList;
+                  });
+                },
+                editVehicle: _editVehicle, // Passando a função de edição do veículo
               ),
             ],
           ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:frontend/modules/authentication/services/auth_service.dart';
 import 'package:http/http.dart' as http;
 
 class Vehicle {
@@ -65,11 +66,52 @@ class VehicleService {
     }
   }
 
+  static Future<void> updateVehicle({
+    required int vehicleId,
+    required String nome,
+    required String marca,
+    required String modelo,
+  }) async {
+    final Uri updateUrl = Uri.parse('$baseUrl/api/veiculos/$vehicleId/');
+
+    try {
+      final authToken = AuthService.getAccessToken(); // Obtém o token de autenticação
+      final Map<String, String> vehicleData = {
+        'nome': nome,
+        'marca': marca,
+        'modelo': modelo,
+      };
+
+      final response = await http.put(
+        updateUrl,
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(vehicleData),
+      );
+
+      if (response.statusCode == 200) {
+        // Atualização bem-sucedida
+      } else {
+        // Tratar falha na atualização
+      }
+    } catch (error) {
+      // Tratar erro de conexão ou outros erros
+    }
+  }
+
   static Future<void> deleteVehicle(int vehicleId) async {
     final Uri deleteUrl = Uri.parse('$baseUrl/api/veiculos/$vehicleId/');
 
     try {
-      final response = await http.delete(deleteUrl);
+      final authToken = AuthService.getAccessToken(); // Obtém o token de autenticação
+      final response = await http.delete(
+        deleteUrl,
+        headers: <String, String>{
+          'Authorization': 'Bearer $authToken', // Adiciona o token no cabeçalho
+        },
+      );
 
       if (response.statusCode != 204) {
         throw Exception('Failed to delete vehicle');
