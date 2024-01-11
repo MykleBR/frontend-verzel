@@ -183,7 +183,10 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                       });
 
                       // ignore: use_build_context_synchronously
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const VehicleRegistrationScreen()),
+                      );
                     } else {
                       // Handle no valid access token
                     }
