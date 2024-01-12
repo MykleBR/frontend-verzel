@@ -28,47 +28,47 @@ Estrutura do Projeto
 
 
 Módulos
-1. Autenticação
+1. authentication
 
-    Telas:
+    screens:
         login_screen.dart: Tela de login do usuário.
         signup_screen.dart: Tela de cadastro de novos usuários.
 
-    Componentes:
+    components:
         auth_form.dart: Widget reutilizável para formulários de autenticação.
 
-    Serviços:
+    services:
         auth_service.dart: Lida com a lógica de autenticação.
 
-2. Veículos
+2. vehicles
 
-    Telas:
+    screens:
         vehicle_list_screen.dart: Exibe a lista de veículos disponíveis.
         vehicle_detail_screen.dart: Exibe detalhes específicos de um veículo.
 
-    Componentes:
+    components:
         vehicle_card.dart: Widget reutilizável para exibir cartões de veículos.
 
-    Serviços:
+    services:
         vehicle_service.dart: Gerencia a comunicação com a API de veículos.
 
-3. Perfil do Usuário
+3. user_profile
 
-    Telas:
+    screens:
         user_profile_screen.dart: Exibe informações e configurações do perfil do usuário.
 
-    Componentes:
+    components:
         profile_info.dart: Widget reutilizável para exibir informações do perfil.
 
-    Serviços:
+    services:
         user_profile_service.dart: Gerencia a comunicação com a API de perfil do usuário.
 
-4. Compartilhado
+4. shared
 
-    Componentes:
+    components:
         custom_button.dart: Botão personalizado comum a várias telas.
 
-    Serviços:
+    services:
         api_service.dart: Serviço genérico para chamadas de API.
 
 Como Iniciar
