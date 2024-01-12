@@ -1,30 +1,32 @@
-Nome do Seu Projeto Flutter
+Front End loja de veiculos
 
-Bem-vindo ao projeto Flutter incrível que desenvolvemos! Este aplicativo oferece uma experiência completa para usuários, incluindo autenticação, visualização de veículos e gerenciamento de perfil. Aqui estão os detalhes para você começar:
+Bem-vindo ao projeto Flutter loja de veiculos que desenvolvi. Este aplicativo oferece uma experiência completa para usuários, incluindo autenticação, visualização de veículos e gerenciamento de perfil. Aqui estão os detalhes para você começar:
+
+
 Estrutura do Projeto
 
 plaintext
 
-lib/
-  |- modules/
-  |  |- authentication/
-  |  |  |- screens/
-  |  |  |- components/
-  |  |  |- services/
-  |  |
-  |  |- vehicles/
-  |  |  |- screens/
-  |  |  |- components/
-  |  |  |- services/
-  |  |
-  |  |- user_profile/
-  |     |- screens/
-  |     |- components/
-  |     |- services/
-  |
-  |- shared/
-     |- components/
-     |- services/
+  lib/
+    |- modules/
+    |  |- authentication/
+    |  |  |- screens/
+    |  |  |- components/
+    |  |  |- services/
+    |  |
+    |  |- vehicles/
+    |  |  |- screens/
+    |  |  |- components/
+    |  |  |- services/
+    |  |
+    |  |- user_profile/
+    |     |- screens/
+    |     |- components/
+    |     |- services/
+    |
+    |- shared/
+       |- components/
+       |- services/
 
 Módulos
 1. Autenticação
