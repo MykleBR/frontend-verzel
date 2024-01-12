@@ -5,26 +5,26 @@ Bem-vindo ao projeto Flutter loja de veiculos que desenvolvi. Este aplicativo of
 
 Estrutura do Projeto
 
-lib/
-|-- modules/
-|   |-- authentication/
-|   |   |-- screens/
-|   |   |-- components/
-|   |   |-- services/
-|   |
-|   |-- vehicles/
-|   |   |-- screens/
-|   |   |-- components/
-|   |   |-- services/
-|   |
-|   |-- user_profile/
-|       |-- screens/
-|       |-- components/
-|       |-- services/
-|
-|-- shared/
-    |-- components/
-    |-- services/
+    lib/
+    |-- modules/
+    |   |-- authentication/
+    |   |   |-- screens/
+    |   |   |-- components/
+    |   |   |-- services/
+    |   |
+    |   |-- vehicles/
+    |   |   |-- screens/
+    |   |   |-- components/
+    |   |   |-- services/
+    |   |
+    |   |-- user_profile/
+    |       |-- screens/
+    |       |-- components/
+    |       |-- services/
+    |
+    |-- shared/
+        |-- components/
+        |-- services/
 
 
 Módulos
