@@ -1,20 +1,9 @@
-# frontend
+Nome do Seu Projeto Flutter
 
-A new Flutter project.
+Bem-vindo ao projeto Flutter incrível que desenvolvemos! Este aplicativo oferece uma experiência completa para usuários, incluindo autenticação, visualização de veículos e gerenciamento de perfil. Aqui estão os detalhes para você começar:
+Estrutura do Projeto
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+plaintext
 
 lib/
   |- modules/
@@ -36,3 +25,55 @@ lib/
   |- shared/
      |- components/
      |- services/
+
+Módulos
+1. Autenticação
+
+    Telas:
+        login_screen.dart: Tela de login do usuário.
+        signup_screen.dart: Tela de cadastro de novos usuários.
+
+    Componentes:
+        auth_form.dart: Widget reutilizável para formulários de autenticação.
+
+    Serviços:
+        auth_service.dart: Lida com a lógica de autenticação.
+
+2. Veículos
+
+    Telas:
+        vehicle_list_screen.dart: Exibe a lista de veículos disponíveis.
+        vehicle_detail_screen.dart: Exibe detalhes específicos de um veículo.
+
+    Componentes:
+        vehicle_card.dart: Widget reutilizável para exibir cartões de veículos.
+
+    Serviços:
+        vehicle_service.dart: Gerencia a comunicação com a API de veículos.
+
+3. Perfil do Usuário
+
+    Telas:
+        user_profile_screen.dart: Exibe informações e configurações do perfil do usuário.
+
+    Componentes:
+        profile_info.dart: Widget reutilizável para exibir informações do perfil.
+
+    Serviços:
+        user_profile_service.dart: Gerencia a comunicação com a API de perfil do usuário.
+
+4. Compartilhado
+
+    Componentes:
+        custom_button.dart: Botão personalizado comum a várias telas.
+
+    Serviços:
+        api_service.dart: Serviço genérico para chamadas de API.
+
+Como Iniciar
+
+    Clone este repositório: git clone https://github.com/seu-usuario/seu-projeto-flutter.git.
+    Abra o projeto no seu editor favorito.
+    Execute flutter pub get para obter as dependências.
+    Conecte um dispositivo ou inicie um emulador.
+    Execute flutter run para iniciar o aplicativo.
