@@ -1,6 +1,6 @@
-Nome do Seu Projeto Flutter
+Loja de Carros Flutter
 
-Bem-vindo ao projeto Flutter incrível que desenvolvemos! Este aplicativo oferece uma experiência completa para usuários, incluindo autenticação, visualização de veículos e gerenciamento de perfil. Aqui estão os detalhes para você começar:
+Bem-vindo ao projeto Flutter incrível que desenvolvi! Este aplicativo oferece uma experiência completa para usuários, incluindo autenticação, visualização de veículos e gerenciamento de perfil. Aqui estão os detalhes para você começar:
 Estrutura do Projeto
 
     lib/
