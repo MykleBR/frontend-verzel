@@ -15,7 +15,7 @@ class VehicleList extends StatelessWidget {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No vehicles available'));
+          return const Center(child: Text('Sem Veículos Disponíveis.'));
         } else {
           var vehicles = snapshot.data!;
 

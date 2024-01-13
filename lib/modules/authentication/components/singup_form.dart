@@ -19,7 +19,7 @@ class SignUpForm extends StatelessWidget {
           TextField(
             controller: _usernameController,
             decoration: const InputDecoration(
-              labelText: 'Username',
+              labelText: 'Usuário',
             ),
           ),
           const SizedBox(height: 16.0),
@@ -27,7 +27,7 @@ class SignUpForm extends StatelessWidget {
             controller: _passwordController,
             obscureText: true,
             decoration: const InputDecoration(
-              labelText: 'Password',
+              labelText: 'senha',
             ),
           ),
           const SizedBox(height: 24.0),
@@ -43,7 +43,7 @@ class SignUpForm extends StatelessWidget {
                 // Tratar falha no cadastro, se necessário
               }
             },
-            child: const Text('Sign Up'),
+            child: const Text('Cadastrar'),
           ),
         ],
       ),

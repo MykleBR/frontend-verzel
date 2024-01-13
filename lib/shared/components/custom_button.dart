@@ -15,7 +15,6 @@ class CustomButton extends StatelessWidget {
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-        // Defina aqui outros estilos para o botão, como cor, altura, etc.
       ),
       child: Text(text),
     );

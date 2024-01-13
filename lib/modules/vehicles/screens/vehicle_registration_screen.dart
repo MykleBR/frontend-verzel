@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -9,22 +10,24 @@ class VehicleRegistrationScreen extends StatefulWidget {
   const VehicleRegistrationScreen({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _VehicleRegistrationScreenState createState() =>
       _VehicleRegistrationScreenState();
 }
 
 class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
   File? _imageFile;
+  File? _editImageFile;
   final TextEditingController _vehicleNomeController = TextEditingController();
   final TextEditingController _marcaController = TextEditingController();
   final TextEditingController _modeloController = TextEditingController();
 
-  List<Vehicle> vehicles = []; // Lista de veículos
+  List<Vehicle> vehicles = [];
 
   @override
   void initState() {
     super.initState();
-    _updateVehicleList(); // Carregar a lista de veículos ao iniciar a tela
+    _updateVehicleList();
   }
 
   Future<void> _getImage() async {
@@ -43,15 +46,19 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
       setState(() {
         vehicles = updatedVehicles;
       });
-    } catch (error) {
-      print('Erro ao carregar veículos: $error');
-    }
+      // ignore: empty_catches
+    } catch (error) {}
   }
 
   void _editVehicle(Vehicle vehicle) {
-    TextEditingController nomeController = TextEditingController(text: vehicle.nome);
-    TextEditingController marcaController = TextEditingController(text: vehicle.marca);
-    TextEditingController modeloController = TextEditingController(text: vehicle.modelo);
+    TextEditingController nomeController =
+        TextEditingController(text: vehicle.nome);
+    TextEditingController marcaController =
+        TextEditingController(text: vehicle.marca);
+    TextEditingController modeloController =
+        TextEditingController(text: vehicle.modelo);
+
+    _editImageFile = null; // Reinicializa a variável ao abrir o modal de edição
 
     showModalBottomSheet(
       context: context,
@@ -82,6 +89,23 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                   controller: modeloController,
                   decoration: const InputDecoration(labelText: 'Modelo'),
                 ),
+                (_editImageFile == null)
+                    ? Image.network(vehicle.foto)
+                    : _editImageFile != null
+                        ? Image.file(_editImageFile!)
+                        : const Placeholder(),
+                ElevatedButton(
+                  onPressed: () async {
+                    final pickedFile =
+                        await ImagePicker().pickImage(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      setState(() {
+                        _editImageFile = File(pickedFile.path);
+                      });
+                    }
+                  },
+                  child: const Text('Escolher Nova Imagem'),
+                ),
                 ElevatedButton(
                   onPressed: () async {
                     Vehicle updatedVehicle = Vehicle(
@@ -89,6 +113,9 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                       nome: nomeController.text,
                       marca: marcaController.text,
                       modelo: modeloController.text,
+                      foto: _editImageFile != null
+                          ? 'data:image/png;base64,${base64Encode(_editImageFile!.readAsBytesSync())}'
+                          : '',
                     );
 
                     await VehicleService.updateVehicle(
@@ -96,11 +123,12 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                       nome: updatedVehicle.nome,
                       marca: updatedVehicle.marca,
                       modelo: updatedVehicle.modelo,
+                      foto: updatedVehicle.foto,
                     );
 
-                    _updateVehicleList(); // Atualiza a lista após a edição do veículo
+                    _updateVehicleList();
                     // ignore: use_build_context_synchronously
-                    Navigator.pop(context); // Fechar o modal após salvar as alterações
+                    Navigator.pop(context);
                   },
                   child: const Text('Salvar Alterações'),
                 ),
@@ -112,11 +140,10 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
     );
   }
 
-
   void _deleteVehicle(Vehicle vehicle) {
     VehicleService.deleteVehicle(vehicle.id)
       .then((_) {
-        _updateVehicleList(); // Atualiza a lista após a exclusão do veículo
+        _updateVehicleList();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Veículo excluído com sucesso')),
         );
@@ -132,7 +159,7 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register Vehicle'),
+        title: const Text('Registrar Veículo'),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -144,19 +171,35 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                 controller: _vehicleNomeController,
                 decoration: const InputDecoration(labelText: 'Nome'),
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _marcaController,
                 decoration: const InputDecoration(labelText: 'Marca'),
               ),
+              const SizedBox(height: 12),
               TextFormField(
                 controller: _modeloController,
                 decoration: const InputDecoration(labelText: 'Modelo'),
               ),
-              _imageFile != null ? Image.file(_imageFile!) : const Placeholder(),
+              const SizedBox(height: 12),
+              _imageFile != null
+                  ? Image.file(
+                      _imageFile!,
+                      height: 150,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    )
+                  : const Placeholder(
+                      color: Colors.grey,
+                      fallbackHeight: 150,
+                      fallbackWidth: double.infinity,
+                    ),
+              const SizedBox(height: 12),
               ElevatedButton(
                 onPressed: _getImage,
-                child: const Text('Imagem'),
+                child: const Text('Escolher Imagem'),
               ),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
                   if (_imageFile != null) {
@@ -192,6 +235,9 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                     }
                   } else {
                     // Show a warning if no image is selected
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Por favor, selecione uma imagem')),
+                    );
                   }
                 },
                 child: const Text('Registrar veículo'),
@@ -209,7 +255,7 @@ class _VehicleRegistrationScreenState extends State<VehicleRegistrationScreen> {
                     vehicles = updatedList;
                   });
                 },
-                editVehicle: _editVehicle, // Passando a função de edição do veículo
+                editVehicle: _editVehicle,
               ),
             ],
           ),

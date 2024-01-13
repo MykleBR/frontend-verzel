@@ -10,7 +10,7 @@ class VehicleDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle Details'),
+        title: const Text('Detalhes do Veículo'),
       ),
       body: Center(
         child: VehicleDetails(vehicleId: vehicleId), // Widget para detalhes do veículo

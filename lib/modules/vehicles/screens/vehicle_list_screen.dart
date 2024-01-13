@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/vehicles/screens/vehicle_details_screen.dart';
 import 'package:frontend/modules/vehicles/services/vehicle_service.dart';
-import '../../../main.dart';
-
 
 class VehicleListScreen extends StatefulWidget {
   const VehicleListScreen({Key? key}) : super(key: key);
@@ -12,13 +10,13 @@ class VehicleListScreen extends StatefulWidget {
   _VehicleListScreenState createState() => _VehicleListScreenState();
 }
 
-class _VehicleListScreenState extends State<VehicleListScreen> with RouteAware {
-  List<Vehicle> vehicles = []; // Lista de veículos
+class _VehicleListScreenState extends State<VehicleListScreen> {
+  late List<Vehicle> vehicles;
 
   @override
-  void didPopNext() {
-    // Esta função é chamada quando a rota da tela VehicleListScreen é reexibida após a navegação para outra tela
-    _updateVehicleList(); // Atualiza a lista de veículos
+  void initState() {
+    super.initState();
+    _updateVehicleList();
   }
 
   Future<void> _updateVehicleList() async {
@@ -28,60 +26,81 @@ class _VehicleListScreenState extends State<VehicleListScreen> with RouteAware {
         vehicles = updatedVehicles;
       });
     } catch (error) {
-      // Trate qualquer erro de conexão ou carregamento
-      print('Erro ao carregar veículos: $error');
+      // Trate os erros conforme necessário
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _updateVehicleList(); // Carrega a lista de veículos ao iniciar a tela
+  Future<void> _refreshVehicleList() async {
+    await _updateVehicleList();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final route = ModalRoute.of(context);
-    if (route != null) {
-      routeObserver.subscribe(this, route as PageRoute<dynamic>);
-    }
-  }
+  Future<void> _navigateToVehicleDetails(int vehicleId) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VehicleDetailsScreen(vehicleId: vehicleId),
+      ),
+    );
 
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
+    await _updateVehicleList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Vehicle List'),
+        title: const Text(
+          'Loja de Veiculos',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20.0,
+          ),
+        ),
       ),
-      body: Center(
+      body: RefreshIndicator(
+        onRefresh: _refreshVehicleList,
         child: ListView.builder(
+          key: UniqueKey(),
           itemCount: vehicles.length,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(vehicles[index].nome),
-              // Ao clicar no item, navegue para a tela de detalhes do veículo
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => VehicleDetailsScreen(vehicleId: vehicles[index].id),
-                  ),
-                );
-              },
+            return GestureDetector(
+              onTap: () => _navigateToVehicleDetails(vehicles[index].id),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                      child: Image.network(
+                        vehicles[index].foto,
+                        fit: BoxFit.cover,
+                        height: 150, // Ajuste conforme necessário
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        vehicles[index].nome,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/login'); // Navegue para a tela de login
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/login');
+          await _updateVehicleList(); // Atualiza a lista após o cadastro
         },
         child: const Icon(Icons.add),
       ),

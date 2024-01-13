@@ -20,7 +20,7 @@ class LoginForm extends StatelessWidget {
           TextField(
             controller: _usernameController,
             decoration: const InputDecoration(
-              labelText: 'Username',
+              labelText: 'Usuário',
             ),
           ),
           const SizedBox(height: 16.0),
@@ -28,7 +28,7 @@ class LoginForm extends StatelessWidget {
             controller: _passwordController,
             obscureText: true,
             decoration: const InputDecoration(
-              labelText: 'Password',
+              labelText: 'Senha',
             ),
           ),
           const SizedBox(height: 24.0),
@@ -49,7 +49,7 @@ class LoginForm extends StatelessWidget {
                 // Exibir mensagem de erro caso o login falhe
               }
             },
-            child: const Text('Login'),
+            child: const Text('Logar'),
           ),
         ],
       ),

@@ -8,12 +8,14 @@ class Vehicle {
   final String nome;
   final String marca;
   final String modelo;
+  final String foto;
 
   Vehicle({
     required this.id,
     required this.nome,
     required this.marca,
     required this.modelo,
+    required this.foto,
   });
 }
 
@@ -34,6 +36,7 @@ class VehicleService {
             nome: vehicle['nome'],
             marca: vehicle['marca'],
             modelo: vehicle['modelo'],
+            foto: vehicle['foto'],
           );
         }).toList();
       } else {
@@ -57,6 +60,7 @@ class VehicleService {
           nome: jsonData['nome'],
           marca: jsonData['marca'],
           modelo: jsonData['modelo'],
+          foto: jsonData['foto'],
         );
       } else {
         throw Exception('Falha ao carregar detalhes do veículo');
@@ -71,11 +75,13 @@ class VehicleService {
     required String nome,
     required String marca,
     required String modelo,
+    required String foto,
   }) async {
     final Uri updateUrl = Uri.parse('$baseUrl/api/veiculos/$vehicleId/');
 
     try {
-      final authToken = AuthService.getAccessToken(); // Obtém o token de autenticação
+      final authToken =
+          AuthService.getAccessToken(); // Obtém o token de autenticação
       final Map<String, String> vehicleData = {
         'nome': nome,
         'marca': marca,
@@ -105,7 +111,8 @@ class VehicleService {
     final Uri deleteUrl = Uri.parse('$baseUrl/api/veiculos/$vehicleId/');
 
     try {
-      final authToken = AuthService.getAccessToken(); // Obtém o token de autenticação
+      final authToken =
+          AuthService.getAccessToken(); // Obtém o token de autenticação
       final response = await http.delete(
         deleteUrl,
         headers: <String, String>{
@@ -120,13 +127,13 @@ class VehicleService {
       throw Exception('Connection error: $error');
     }
   }
-  
+
   static Future<void> signUpVehicle({
     required String nome,
     required String marca,
     required String modelo,
     required File imageFile,
-    required String authToken, // Adicione o token de acesso como parâmetro
+    required String authToken,
   }) async {
     final Uri signUpUrl = Uri.parse('$baseUrl/api/veiculos/');
 
@@ -145,14 +152,12 @@ class VehicleService {
       request.headers['authorization'] = 'Bearer $authToken';
 
       // Adicionar os dados do veículo à requisição
-      vehicleData.forEach((key, value) {
-        request.fields[key] = value;
-      });
+      request.fields.addAll(vehicleData);
 
       // Adicionar a imagem como um arquivo multipart
       request.files.add(
         await http.MultipartFile.fromPath(
-          'imagem', // Nome do campo no servidor
+          'foto', // Nome do campo no servidor
           imageFile.path,
         ),
       );
@@ -163,12 +168,14 @@ class VehicleService {
       // Verificar o status da resposta
       if (response.statusCode == 201) {
         // Cadastro bem-sucedido
+
       } else {
         // Tratar falha no cadastro
+
       }
     } catch (error) {
       // Tratar erro de conexão ou outros erros
+
     }
   }
-  
 }

@@ -4,8 +4,8 @@ import '../services/vehicle_service.dart';
 class VehicleListWidget extends StatelessWidget {
   final Function(List<Vehicle>) updateList;
   final List<Vehicle> vehicles;
-  final void Function(Vehicle vehicle) deleteVehicle;
-  final void Function(Vehicle vehicle) editVehicle; // Adicionando a função de edição
+  final void Function(Vehicle vehicle) deleteVehicle; 
+  final void Function(Vehicle vehicle) editVehicle;
 
   const VehicleListWidget({
     Key? key,
